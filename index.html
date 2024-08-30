@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Color Guess Game</title>
+    <style>
+        .color-block {
+            width: 100px;
+            height: 100px;
+            display: inline-block;
+            margin: 10px;
+            border: 1px solid #000;
+        }
+    </style>
+</head>
+<body>
+<h1>Color Guess Game</h1>
+
+<p id="rgb-color">RGB(255, 0, 0)</p>
+<p id="status">Start Guessing!</p>
+<div class="color-block"></div>
+<div class="color-block"></div>
+<div class="color-block"></div>
+<div class="color-block"></div>
+<div class="color-block"></div>
+<div class="color-block"></div>
+<button type="reset">restart</button>
+
+<script>
+    let correctColor;
+
+    function getRandomColor() {
+        const r = Math.floor(Math.random() * 256);
+        const g = Math.floor(Math.random() * 256);
+        const b = Math.floor(Math.random() * 256);
+        return `rgb(${r}, ${g}, ${b})`;
+    }
+
+    function randomizeColors() {
+        const colorBlocks = document.querySelectorAll('.color-block');
+        const colorArray = Array.from({ length: colorBlocks.length }, () => getRandomColor());
+
+        correctColor = getRandomColor();
+        // Ensure one of the color blocks is the correct color
+        colorArray[Math.floor(Math.random() * colorBlocks.length)] = correctColor;
+
+        // Update color blocks
+        colorBlocks.forEach((block, index) => {
+            block.style.backgroundColor = colorArray[index];
+            block.style.display = 'inline-block'; // Show all blocks
+            block.onclick = handleClick; // Add click event handler
+        });
+
+        // Update the correct color text
+        document.getElementById('rgb-color').textContent = correctColor.toUpperCase();
+
+        // Set the game status
+        document.getElementById('status').textContent = 'Start Guessing!';
+    }
+
+    function handleClick(event) {
+        const clickedColor = event.target.style.backgroundColor;
+        const status = document.getElementById('status');
+
+        if (clickedColor === correctColor) {
+            status.textContent = 'Correct!';
+            // Optionally, set all color blocks to display the correct color
+            document.querySelectorAll('.color-block').forEach(block => {
+                block.style.backgroundColor = correctColor;
+            });
+        } else {
+            status.textContent = 'Try Again!';
+            event.target.style.display = 'none'; // Hide the clicked block
+        }
+    }
+
+    document.addEventListener('DOMContentLoaded', function() {
+        randomizeColors();
+    });
+
+    document.querySelector('button[type="reset"]').addEventListener('click', function() {
+        randomizeColors();
+    });
+</script>
+</body>
+</html>
